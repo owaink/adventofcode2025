@@ -9,17 +9,37 @@ fn main() {
     let mut dial: i16 = 50;
     let mut zero_count: i16 = 0;
     for line in file_content {
-        let clicks: &i16 = &line[1..].parse::<i16>().unwrap();
+        let clicks: i16 = line[1..].parse::<i16>().unwrap();
 
         if line.into_bytes()[0] == b'R' {
+            if (dial + clicks) > 100 {
+                let rotations = (dial + clicks)/100;
+                zero_count += rotations;
+            }
             dial = (dial + clicks) % 100;
         } else {
-            dial = dial - clicks;
-            if dial < 0 {
-                dial = 100 + dial;
+            if dial != 0 {
+                dial = 100 - dial;
             }
+            if (dial + clicks) > 100 {
+                let rotations = (dial + clicks)/100;
+                zero_count += rotations;
+            }
+            dial = (dial + clicks) % 100;
+            if dial != 0 {
+                dial = 100 - dial;
+            }
+            
+            // if (dial - clicks) < 0 {
+            //     let rotations = (dial - clicks)/100;
+            //     zero_count -= rotations;
+            // }
+            // dial = dial - (clicks % 100);
+            // if dial < 0 {
+            //     dial = 100 + dial;
+            // }
         }
-        if dial == 0 {
+        if dial == 0 && clicks < 100{
             zero_count += 1;
         }
     }
